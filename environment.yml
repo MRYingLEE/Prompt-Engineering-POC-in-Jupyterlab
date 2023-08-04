@@ -1,0 +1,7 @@
+name: chatgpt
+channels:
+  - conda-forge
+dependencies:
+  - numpy
+  - pandas
+  - matplotlib
