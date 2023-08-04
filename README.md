@@ -244,26 +244,26 @@ The most tricky way to prepare the context for the prompt is to generate the cur
 3. The defined function is called every time when we need the context on all Pandas data frames.
 
 ```Python
-						const pythonCode = 
-						`def get_df_defines():\n \
-						  	lines=["import pandas as pd", ""]\n \
-							dfs_only = {k: v for k, v in globals().items() if isinstance(v, pd.DataFrame)}\n \
-							for df_name, df in dfs_only.items():\n \
-								cols=','.join(['"'+c+'"' for c in df.columns])\n \
-								dts=','.join(['"'+c+'" : "'+str(t)+'"' for c, t in zip(df.columns,df.dtypes)])\n \
-								lines.append(df_name+'=pd.read_csv("'+df_name+'.csv", columns={'+cols+'}, dtype={'+ dts + '})')\n \
-							return '\n'.join(lines)\n \
-						get_df_defines()`;
+const pythonCode = 
+`def get_df_defines():\n \
+	lines=["import pandas as pd", ""]\n \
+	dfs_only = {k: v for k, v in globals().items() if isinstance(v, pd.DataFrame)}\n \
+	for df_name, df in dfs_only.items():\n \
+		cols=','.join(['"'+c+'"' for c in df.columns])\n \
+		dts=','.join(['"'+c+'" : "'+str(t)+'"' for c, t in zip(df.columns,df.dtypes)])\n \
+		lines.append(df_name+'=pd.read_csv("'+df_name+'.csv", columns={'+cols+'}, dtype={'+ dts + '})')\n \
+	return '\n'.join(lines)\n \
+get_df_defines()`;
 
-						const pythonCode = "get_df_defines()";
+const pythonCode = "get_df_defines()";
 
-						const getUserPromptPromise = function (parsedCell) {
-							return window.executePython(pythonCode).then((result) => {
-								parsedCell.codeContext = "The following Python code has been developed:\n```Python\n" + result + "\n```\n" +
-									"Please append some Pythonic Python code to solve the following task. Please don't recreate the dataframes. \n";
-								const prompt = parsedCell.codeContext + getUserPrompt(parsedCell);
+const getUserPromptPromise = function (parsedCell) {
+	return window.executePython(pythonCode).then((result) => {
+		parsedCell.codeContext = "The following Python code has been developed:\n```Python\n" + result + "\n```\n" +
+			"Please append some Pythonic Python code to solve the following task. Please don't recreate the dataframes. \n";
+		const prompt = parsedCell.codeContext + getUserPrompt(parsedCell);
 
-								return prompt;
-							});
-						};
+		return prompt;
+	});
+};
 ```
